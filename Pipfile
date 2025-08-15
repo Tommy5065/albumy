@@ -5,6 +5,12 @@ name = "pypi"
 
 [packages]
 python-dotenv = "*"
+flask-login = "*"
+flask-wtf = "*"
+flask-moment = "*"
+flask-sqlalchemy = "*"
+flask-email = "*"
+bootstrap-flask = "*"
 
 [dev-packages]
 

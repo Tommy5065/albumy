@@ -1,0 +1,76 @@
+{% from 'bootstrap/nav.html' import render_nav_item %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% block head %}
+    	<title>{% block title %}{% endblock %}-albumy</title>
+        <link type="text/css" rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" >
+        {% block style %}
+        	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+        	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+            <link rel="stylesheet" href="//at.alicdn.com/t/c/font_5000310_0hgpvvtclcr5.css">
+        {% endblock %}
+    {% endblock %}
+</head>
+
+<body>
+{% block navbar %}
+    <nav>
+        <div class="navbar navbar-expand-lg navbar-light bg-light ">
+            <a class="navbar-brand" href="#">
+                <img src="{{ url_for('static', filename='favicon.ico') }}">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation"></button>
+
+            <div class="collapse navbar-collapse" id="navbarColor01">
+                <div class="navbar-nav mr-auto">
+                    {{ render_nav_item('main.index','Home') }}
+{#                    {{ render_nav_item('#','Explore') }}#}
+{#                    {{ render_nav_item('#','About') }}#}
+                    <form method="post" action="#">
+                        <input placeholder="Photo, Tag or User" type="text" name="search" class="form-control mr-sm-1" required>
+                        <button type="submit" class="btn " id="search">
+                            <span class="iconfont icon-sousuo"></span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+
+<main>
+    <div class="container">
+        {% for msg in get_flashed_messages(with_categories=True)  %}
+            <div class="alert alert-{{ msg[0] }}" >
+                {{ msg[1] }}
+                <button class="close" type="button" data-bs-dismiss="alert">&times;</button>
+            </div>
+        {% endfor %}
+        {% block content %}{% endblock %}
+        {% block footer %}
+            <footer>
+                <p class="float-left">
+                    <small>&copy;2025-Moment</small>
+                    <small><a href="#">Tommy</a></small>-
+                    <small><a href="#">GitHub</a></small>-
+                    <small><a href="#">Hello Flask</a></small>
+                </p>
+                <p class="float-right">
+                    <small>Capture and share every wonderful moment.</small>
+                </p>
+            </footer>
+        {% endblock %}
+    </div>
+</main>
+
+{% block scripts %}
+	<script type="text/javascript" href="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+	<script type="text/javascript" href="{{ url_for('static', filename='js/jquery-3.7.1.js') }}"></script>
+    {{ moment.include_moment(local_js=url_for('static', filename='moment-with-locales.min.js')) }}
+{% endblock %}
+</body>
+</html>
