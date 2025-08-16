@@ -3,10 +3,11 @@ import os
 from flask import Flask, render_template
 from flask_wtf.csrf import CSRFError
 
-from albumy.extensions import  db, moment, bootstrap, csrf
+from albumy.extensions import login_manager, db, moment, bootstrap, csrf, mail
 from albumy.settings import Config
 
 from blueprints.main import bp as main_bp
+from blueprints.auth import bp as auth_bp
 
 
 def create_app(Config_name=None):
@@ -19,11 +20,12 @@ def create_app(Config_name=None):
     app.config.from_object(Config[Config_name])
 
     def register_extensions(app):
-        # login_manager.init_app(app)
+        login_manager.init_app(app)
         db.init_app(app)
         moment.init_app(app)
         bootstrap.init_app(app)
         csrf.init_app(app)
+        mail.init_app(app)
     def register_errors(app):
         @app.errorhandler(CSRFError)
         def bad_request(e):
@@ -37,12 +39,19 @@ def create_app(Config_name=None):
         def error_not_found(e):
             return render_template('errors/500.html'), 404
 
+    def register_command(app):
+        @app.shell_context_processor
+        def make_shell_context():
+            return dict(db=db)
+
     def register_blueprint(app):
        app.register_blueprint(main_bp)
+       app.register_blueprint(auth_bp, url_prefix='/auth')
 
     register_extensions(app)
     register_errors(app)
     register_blueprint(app)
+    register_command(app)
 
     return app
 
