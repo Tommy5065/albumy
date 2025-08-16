@@ -298,8 +298,8 @@ footer {
     position: relative;
 }
 
-#search>span {
+#search> button {
     position: absolute;
-    top: -35px;
+    top: 0px;
     left: 221px;
 }

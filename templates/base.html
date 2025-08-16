@@ -1,4 +1,4 @@
-{% from 'bootstrap/nav.html' import render_nav_item %}
+{% from 'bootstrap4/nav.html' import render_nav_item %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -30,9 +30,9 @@
                     {{ render_nav_item('main.index','Home') }}
 {#                    {{ render_nav_item('#','Explore') }}#}
 {#                    {{ render_nav_item('#','About') }}#}
-                    <form method="post" action="#">
+                    <form method="post" action="#" id="search" >
                         <input placeholder="Photo, Tag or User" type="text" name="search" class="form-control mr-sm-1" required>
-                        <button type="submit" class="btn " id="search">
+                        <button type="submit" class="btn " >
                             <span class="iconfont icon-sousuo"></span>
                         </button>
                     </form>
@@ -70,7 +70,7 @@
 {% block scripts %}
 	<script type="text/javascript" href="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 	<script type="text/javascript" href="{{ url_for('static', filename='js/jquery-3.7.1.js') }}"></script>
-    {{ moment.include_moment(local_js=url_for('static', filename='moment-with-locales.min.js')) }}
+    {{ moment.include_moment(local_js=url_for('static', filename='js/moment-with-locales.min.js')) }}
 {% endblock %}
 </body>
 </html>
