@@ -1,0 +1,7 @@
+Hello {{ user.username }}
+
+Please visit the link to verify your email :
+
+{{ url_for('auth.confirm', _external=True, token=token) }}
+
+(Please do not reply the email)
