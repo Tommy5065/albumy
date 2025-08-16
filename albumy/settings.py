@@ -2,7 +2,7 @@ import os
 
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 class BaseConfig:
-    SECRETE_KEY = os.getenv('SECRET-KEY', 'secret string')
+    SECRET_KEY = os.getenv('SECRET_KEY', 'secret string')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
