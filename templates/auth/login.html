@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% from 'bootstrap4/form.html' import render_form %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+	<div class="jumbotron">
+        <div class="row">
+            <div class="col-md-8">
+                <img class="rounded img-fluid" src="{{ url_for('static', filename='image_index/pillow_image.jpg') }}">
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-3 w-100. bg-light">
+                    <div class="card-header"><h4>Login to Moment!</h4></div>
+                    <div class="card-body">
+                        {{ render_form(form) }}
+                        <hr>
+                        <small><a href="{{ url_for('auth.register') }}">Register new account</a></small>
+                        <small><a href="#">Forget Password</a></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
