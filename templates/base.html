@@ -37,6 +37,39 @@
                         </button>
                     </form>
                 </div>
+                {% if current_user.is_authenticated %}
+                	<div class="float-right navbar-nav">
+                        <a href="#" class="nav-item nav-link">
+                            <span class="iconfont icon-lingdang"></span>
+                            <span id="notification-badge" class="badge badge-danger badge-notification">提醒</span>
+                        </a>&nbsp;&nbsp;
+                        <a href="#" class="nav-item nav-link" title="Upload">
+                            <span class="iconfont icon-jiahao-"></span>
+                        </a>&nbsp;&nbsp;
+                        <div class="dropdown nav-item">
+                            <a class="nav-link dropdown-toggle" data-bs-target="dropdown" role="button" aria-expanded="false">
+                                <img src="#">
+                                <span class="caret"></span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" role="menu">
+                                <h6 class="dropdown-header">Logged in as {{ current_user.username }}</h6>
+                                <a class="dropdown-item" href="#">
+                                    <span class="iconfont icon-solid-home">My Home</span>
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">
+                                    <span class="iconfont icon-shezhi">Settings</span>
+                                </a>
+                                <a class="dropdown-item" href="{{ url_for('auth.logout') }}">
+                                    <span class="iconfont icon-dianyuan">Logout</span>
+                                </a>
+                            </div>
+                        </div>
+                {% else %}
+                    <a class="btn btn-outline-primary" href="{{ url_for('auth.login') }}">Login</a>&nbsp;&nbsp;
+                    <a class="btn btn-primary" href="{{ url_for('auth.register') }}">Join Albumy</a>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </nav>
