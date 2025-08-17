@@ -11,6 +11,7 @@ flask-moment = "*"
 flask-sqlalchemy = "*"
 bootstrap-flask = "*"
 flask-mail = "*"
+pillow = "*"
 
 [dev-packages]
 
