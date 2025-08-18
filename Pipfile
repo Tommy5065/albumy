@@ -12,6 +12,7 @@ flask-sqlalchemy = "*"
 bootstrap-flask = "*"
 flask-mail = "*"
 pillow = "*"
+email-validator = "*"
 
 [dev-packages]
 
