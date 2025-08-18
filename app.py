@@ -29,7 +29,7 @@ def create_app(Config_name=None):
     def register_errors(app):
         @app.errorhandler(CSRFError)
         def bad_request(e):
-            return render_template('errors/400.html', desctription=e.deiscription), 400
+            return render_template('errors/400.html', desctription=e.description), 400
 
         @app.errorhandler(500)
         def error_handler(e):
