@@ -9,7 +9,7 @@ class BaseConfig:
     MAIL_USERNAME = os.getenv('MAIL_USERNAME')
     MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
     MAIL_USE_SSL = True
-    MAIl_PORT = 465
+    MAIL_PORT = 465
     MAIL_DEFAULT_SENDER = ('Albumy',os.getenv('MAIL_USERNAME'))
 
 class DevelopmentConfig(BaseConfig):
