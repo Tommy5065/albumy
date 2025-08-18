@@ -1,25 +1,29 @@
 from flask import current_app, request, redirect, url_for
-from itsdangerous import TimedSerializer as Serializer
-from itsdangerous import BadSignature, SignatureExpired
+from authlib.jose import jwt, JoseError
 from urllib.parse import urlparse, urljoin
+
 
 from albumy.settings import Operations
 from albumy.extensions import db
 
-def generate_token(user, operation, expire_in=None, **kwargs):
+def generate_token(user, operation, **kwargs):
     """
-    生成token令牌
-    :param user:
-    :param operation: 生成的token的目的，本次是验证用户邮箱
-    :param expire_in: 过期时间，默认1小时
-    :param kwargs: 关键字参数
-    :return: 最终生成的签名
+    生成用于邮箱验证的Token
+    :param user: 用户Id
+    :param operation: 用户操作
+    :param kwargs:
+    :return:
     """
-    s = Serializer(current_app.config['SECRET_KEY'], expire_in)
+    # 签名算法
+    header = {"alg": 'HS256', "typ": 'JWT'}
+    # 加密信息密钥
+    key = current_app.config['SECRET_KEY']
+    # 待签名的数据负载
     data = {'id': user.id, 'operation': operation}
     data.update(**kwargs)
-    return s.dumps(data)
-
+    token = jwt.encode(header=header, payload=data, key=key)
+    # 显示设置用utf-8解码为validate_token可解码的字符串，而不是由Base64编码生成的字节串，否则在验证的时候默认使用utf-8解码字节串
+    return token.decode('utf-8')
 
 def validate_token(user, token, operation):
     """
@@ -29,10 +33,11 @@ def validate_token(user, token, operation):
     :param operation:
     :return: 用户名模型类中confirm_statue变为True
     """
-    s = Serializer(current_app.config['SECRET_KEY'])
+    key = current_app.config['SECRET_KEY']
     try:
-        data = s.loads(token)
-    except (BadSignature, SignatureExpired):
+        data = jwt.decode(token, key=key)
+    except JoseError as e:
+        print(f'wrong:{e}')
         return False
 
     if operation != data.get('operation') or user.id != data.get('id'):
@@ -45,7 +50,6 @@ def validate_token(user, token, operation):
 
     db.session.commit()
     return True
-
 
 def redirect_up(default='main.index', **kwargs):
     for target in request.args.get('next'), request.referrer:

@@ -23,11 +23,13 @@ def register():
         password = form.Password.data
         user = User(username=username, email=email, name=name)
         user.set_hash(password)
+        db.drop_all()
+        db.create_all()
         db.session.add(user)
         db.session.commit()
         token = generate_token(user=user, operation=Operations.CONFIRM)
         send_confirm_email(user=user, token=token)
-        flash('Send confirm email, check your inbox', 'info')
+        flash('Send confirm email, Please login after check your inbox', 'info')
         return redirect(url_for('.login'))
 
     return render_template('auth/register.html', form=form)
@@ -41,13 +43,14 @@ def confirm(token):
     :return:
     """
     if current_user.confirm_statue:
+        flash('You have confirmed!','warning')
         return redirect(url_for('main.index'))
 
     if validate_token(user=current_user, token=token, operation=Operations.CONFIRM):
-        flash('Account confirmed!','success')
-        return redirect(url_for('main'))
+        flash('Account confirmed!', 'success')
+        return redirect(url_for('main.index'))
     else:
-        flash('Invalid or expired token','warning')
+        flash('Invalid or expired token', 'warning')
         return redirect(url_for('.resend_confirm'))
 
 @bp.route('/resend_confirm_email')
