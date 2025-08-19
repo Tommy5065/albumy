@@ -89,7 +89,7 @@ def login():
 def logout():
     logout_user()
     flash('Logout Successfully!','success')
-    return redirect_up()
+    return redirect(url_for('.login'))
 
 @bp.route('/forget_password', methods=['POST','GET'])
 def forget_password():
