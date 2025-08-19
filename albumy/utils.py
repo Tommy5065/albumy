@@ -25,13 +25,13 @@ def generate_token(user, operation, **kwargs):
     # 显示设置用utf-8解码为validate_token可解码的字符串，而不是由Base64编码生成的字节串，否则在验证的时候默认使用utf-8解码字节串
     return token.decode('utf-8')
 
-def validate_token(user, token, operation):
+def validate_token(user, token, operation, new_password=None):
     """
     验证token令牌
     :param user:
     :param token:
     :param operation:
-    :return: 用户名模型类中confirm_statue变为True
+    :return: 根据operation操作修改数据库中的字段
     """
     key = current_app.config['SECRET_KEY']
     try:
@@ -45,6 +45,9 @@ def validate_token(user, token, operation):
 
     if operation == Operations.CONFIRM:
         user.confirm_statue = True
+
+    elif operation == Operations.RESET_PASSWORD:
+        user.set_hash(password=new_password)
     else:
         return False
 
