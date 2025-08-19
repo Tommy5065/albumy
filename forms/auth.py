@@ -12,11 +12,11 @@ class RegisterForm(FlaskForm):
     Submit = SubmitField('Submit')
 
     def validate_email(self, field):
-        if User.query.filter(field.Email.data):
+        if User.query.filter_by(email=field.Email.data).first():
             raise ValidationError('The Email has already in use')
 
     def validate_username(self,field):
-        if User.query.filter(field.Username.data):
+        if User.query.filter_by(username=field.Username.data).first():
             raise ValidationError('The username has already exist')
 
 
@@ -25,3 +25,13 @@ class LoginForm(FlaskForm):
     Password = PasswordField('Password', validators=[DataRequired(), Length(8,256)])
     Remember_Me = BooleanField('Remember Me')
     submit = SubmitField('login in')
+
+class ForgetPasswordForm(FlaskForm):
+    Email = EmailField('Email', validators=[DataRequired(), Length(1, 254), Email()])
+    submit = SubmitField()
+
+class ResetPasswordForm(FlaskForm):
+    Email = EmailField('Email', validators=[DataRequired(), Length(1,254), Email()])
+    Password = PasswordField('Password', validators=[DataRequired(), Length(8, 256), EqualTo('Password2')])
+    Password2 = PasswordField('Confirm Password', validators=[DataRequired(), Length(8, 256)])
+    submit = SubmitField()

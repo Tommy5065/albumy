@@ -38,7 +38,7 @@
                     </form>
                 </div>
                 {% if current_user.is_authenticated %}
-                	<div class="float-right navbar-nav">
+                	<div class="ml-auto navbar-nav">
                         <a href="#" class="nav-item nav-link">
                             <span class="iconfont icon-lingdang"></span>
                             <span id="notification-badge" class="badge badge-danger badge-notification">提醒</span>
@@ -46,9 +46,10 @@
                         <a href="#" class="nav-item nav-link" title="Upload">
                             <span class="iconfont icon-jiahao-"></span>
                         </a>&nbsp;&nbsp;
+                        <a class="btn btn-outline-primary" href="{{ url_for('auth.logout') }}">Logout</a>&nbsp;&nbsp;
                         <div class="dropdown nav-item">
-                            <a class="nav-link dropdown-toggle" data-bs-target="dropdown" role="button" aria-expanded="false">
-                                <img src="#">
+                            <a class="nav-link dropdown-toggle" data-bs-target="dropdown" role="button" aria-expanded="false" href="#">
+                                <img src="#" class="avatar-xs">
                                 <span class="caret"></span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" role="menu">

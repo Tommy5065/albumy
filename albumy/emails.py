@@ -25,3 +25,6 @@ def send_email(subject, to, template, **kwargs):
 
 def send_confirm_email(user, token, to=None):
     send_email(subject='Confirm Email', to=to or user.email, template='emails/confirm', user=user, token=token)
+
+def send_resetPassword_email(user, token, to=None):
+    send_email(subject='Reset Password', to=to or user.email, template='emails/reset_password', user=user, token=token)
