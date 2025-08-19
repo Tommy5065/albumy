@@ -29,7 +29,7 @@ def create_app(Config_name=None):
     def register_errors(app):
         @app.errorhandler(CSRFError)
         def bad_request(e):
-            return render_template('errors/400.html', desctription=e.description), 400
+            return render_template('errors/400.html', description=e.description), 400
 
         @app.errorhandler(500)
         def error_handler(e):
@@ -37,7 +37,11 @@ def create_app(Config_name=None):
 
         @app.errorhandler(404)
         def error_not_found(e):
-            return render_template('errors/500.html'), 404
+            return render_template('errors/500.html', description=e), 404
+
+        @app.errorhandler(401)
+        def error_not_found(e):
+            return render_template('errors/500.html', description=e), 401
 
     def register_command(app):
         @app.shell_context_processor
@@ -52,6 +56,10 @@ def create_app(Config_name=None):
     register_errors(app)
     register_blueprint(app)
     register_command(app)
+
+    login_manager.login_view = 'auth.login'
+    login_manager.login_message = 'Please login firstly'
+    login_manager.login_message_category = 'warning'
 
     return app
 
