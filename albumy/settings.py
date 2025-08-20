@@ -13,7 +13,8 @@ class BaseConfig:
     MAIL_DEFAULT_SENDER = ('Albumy',os.getenv('MAIL_USERNAME'))
 
 class DevelopmentConfig(BaseConfig):
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'data-dev.db')
+    # SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'data-dev.db')
+    SQLALCHEMY_DATABASE_URI = 'mysql://ToMan:root123@localhost/albumy'
 
 class TestingConfig(BaseConfig):
     TestingConfig = True

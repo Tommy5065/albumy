@@ -18,6 +18,7 @@ bootstrap-flask = "*"
 flask-mail = "*"
 pillow = "*"
 email-validator = "*"
+mysqlclient = "*"
 
 [dev-packages]
 
