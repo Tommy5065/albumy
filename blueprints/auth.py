@@ -24,8 +24,6 @@ def register():
         password = form.Password.data
         user = User(username=username, email=email, name=name)
         user.set_hash(password)
-        db.drop_all()
-        db.create_all()
         db.session.add(user)
         db.session.commit()
         token = generate_token(user=user, operation=Operations.CONFIRM)

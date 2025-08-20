@@ -1,7 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, EmailField, SubmitField, ValidationError, BooleanField
+from wtforms import StringField, PasswordField, EmailField, SubmitField, BooleanField, ValidationError
 from wtforms.validators import DataRequired, Length, Email, EqualTo, Regexp
-from albumy.models import User
 
 class RegisterForm(FlaskForm):
     Name = StringField('Name', validators=[DataRequired(), Length(1, 30)])
@@ -12,11 +11,13 @@ class RegisterForm(FlaskForm):
     Submit = SubmitField('Submit')
 
     def validate_email(self, field):
-        if User.query.filter_by(email=field.Email.data).first():
+        from albumy.models import User
+        if User.query.filter_by(email=field.data).first():
             raise ValidationError('The Email has already in use')
 
     def validate_username(self,field):
-        if User.query.filter_by(username=field.Username.data).first():
+        from albumy.models import User
+        if User.query.filter_by(username=field.data).first():
             raise ValidationError('The username has already exist')
 
 

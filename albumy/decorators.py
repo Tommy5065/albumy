@@ -1,6 +1,6 @@
 from functools import wraps
 
-from flask import flash, redirect, Markup, url_for
+from flask import flash, redirect, Markup, url_for, abort
 from flask_login import current_user
 
 def confirm_required(func):
@@ -16,3 +16,18 @@ def confirm_required(func):
             return redirect(url_for('main.index'))
         return func(*args, **kwargs)
     return decorate_confirm
+
+# 权限查验装饰器
+def permission_required(permission_name):
+    def decorate(func):
+        @wraps(func)
+        def decorated_function(*args, **kwargs):
+            if not current_user.can(permission_name):
+                abort(403)
+            return func(*args, **kwargs)
+        return decorated_function
+    return decorate
+
+# 管理员权限查验装饰器
+def admin_required(func):
+    permission_required('ADMINISTRATOR')(func)

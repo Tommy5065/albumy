@@ -1,10 +1,12 @@
 import os
 
+import click
 from flask import Flask, render_template
 from flask_wtf.csrf import CSRFError
 
 from albumy.extensions import login_manager, db, moment, bootstrap, csrf, mail
 from albumy.settings import Config
+from albumy.models import Role, Guest
 
 from blueprints.main import bp as main_bp
 from blueprints.auth import bp as auth_bp
@@ -48,6 +50,16 @@ def create_app(Config_name=None):
         def make_shell_context():
             return dict(db=db)
 
+        @app.cli.command()
+        def init():
+            """Initialize database"""
+            click.echo('Initializing database ')
+            db.drop_all()
+            db.create_all()
+            click.echo('Initialize role permission')
+            Role.init_role_permission()
+            click.echo('Initialize Done!')
+
     def register_blueprint(app):
        app.register_blueprint(main_bp)
        app.register_blueprint(auth_bp, url_prefix='/auth')
@@ -60,6 +72,7 @@ def create_app(Config_name=None):
     login_manager.login_view = 'auth.login'
     login_manager.login_message = 'Please login firstly'
     login_manager.login_message_category = 'warning'
+    login_manager.anonymous_user = Guest
 
     return app
 
