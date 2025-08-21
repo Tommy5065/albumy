@@ -18,10 +18,10 @@ def register():
     form = RegisterForm()
 
     if form.validate_on_submit():
-        name = form.Name.data
-        email = form.Email.data.lower()
-        username = form.Username.data
-        password = form.Password.data
+        name = form.name.data
+        email = form.email.data.lower()
+        username = form.username.data
+        password = form.password.data
         user = User(username=username, email=email, name=name)
         user.set_hash(password)
         db.session.add(user)
@@ -70,9 +70,9 @@ def login():
 
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.Email.data.lower()).first()
-        if user is not None and user.check_hash(form.Password.data):
-            if login_user(user,form.Remember_Me.data):
+        user = User.query.filter_by(email=form.email.data.lower()).first()
+        if user is not None and user.check_hash(form.password.data):
+            if login_user(user,form.remember_Me.data):
                 flash('login successfully', 'success')
                 return redirect_up()
             else:
@@ -96,7 +96,7 @@ def forget_password():
 
     form = ForgetPasswordForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.Email.data.lower()).first()
+        user = User.query.filter_by(email=form.email.data.lower()).first()
         if user:
             token = generate_token(user=user, operation=Operations.RESET_PASSWORD)
             send_resetPassword_email(user=user, token=token)
@@ -113,9 +113,9 @@ def reset_password(token):
 
     form = ResetPasswordForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.Email.data.lower()).first()
+        user = User.query.filter_by(email=form.email.data.lower()).first()
         if user:
-            if validate_token(token=token, user=user, new_password=form.Password.data, operation=Operations.RESET_PASSWORD):
+            if validate_token(token=token, user=user, new_password=form.password.data, operation=Operations.RESET_PASSWORD):
                 flash('Password Update','success')
                 return redirect(url_for('.login'))
             else:
