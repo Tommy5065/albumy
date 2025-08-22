@@ -1,3 +1,6 @@
+import os.path
+import uuid
+
 from flask import current_app, request, redirect, url_for
 from authlib.jose import jwt, JoseError
 from urllib.parse import urlparse, urljoin
@@ -68,3 +71,11 @@ def is_safe_url(target):
     test_url = urlparse(urljoin(request.host_url, target))
     return test_url.scheme in ('http', 'https') and \
         test_url.netloc == host_url.netloc
+
+def random_filename(filename):
+    """生成安全的随机文件名 """
+    ext = os.path.splitext(filename)[1]
+    new_filename = uuid.uuid4().hex + ext
+    return new_filename
+
+

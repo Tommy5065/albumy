@@ -4,7 +4,7 @@ import click
 from flask import Flask, render_template
 from flask_wtf.csrf import CSRFError
 
-from albumy.extensions import login_manager, db, moment, bootstrap, csrf, mail
+from albumy.extensions import login_manager, db, moment, bootstrap, csrf, mail, dropzone
 from albumy.settings import Config
 from albumy.models import Role, Guest
 
@@ -28,6 +28,9 @@ def create_app(Config_name=None):
         bootstrap.init_app(app)
         csrf.init_app(app)
         mail.init_app(app)
+        dropzone.init_app(app)
+
+
     def register_errors(app):
         @app.errorhandler(CSRFError)
         def bad_request(e):

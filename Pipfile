@@ -19,6 +19,7 @@ flask-mail = "*"
 pillow = "*"
 email-validator = "*"
 mysqlclient = "*"
+flask-dropzone = "*"
 
 [dev-packages]
 

@@ -19,6 +19,7 @@ class User(db.Model, UserMixin):
     confirm_statue = db.Column(db.Boolean, default=False)
     roles_id = db.Column(db.Integer, db.ForeignKey('role.id'))
     roles = db.relationship('Role', back_populates='users')
+    photos = db.relationship('Photo', back_populates='auth', cascade='all')
 
     def set_hash(self, password):
         self.password_hash = generate_password_hash(password)
@@ -107,3 +108,12 @@ class Guest(AnonymousUserMixin):
 
     def can(self, permission_name):
         return False
+
+# 图片类
+class Photo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    description = db.Column(db.String(500))
+    filename = db.Column(db.String(254))
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    auth_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    auth = db.relationship('User', back_populates='photos')
