@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, render_template, request, current_app
+from flask import Blueprint, render_template, request, current_app, send_from_directory
 from flask_login import login_required, current_user
 
 from albumy.utils import random_filename, resize_image
@@ -41,3 +41,8 @@ def upload():
         db.session.rollback()
 
     return render_template('main/upload.html')
+
+# 生成像static视图函数一样的资源指向
+@bp.route('/avatars/<path:filename>')
+def get_avatar(filename):
+    return send_from_directory(current_app.config["AVATARS_SAVE_PATH"], filename)

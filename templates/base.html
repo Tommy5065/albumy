@@ -38,33 +38,46 @@
                     </form>
                 </div>
                 {% if current_user.is_authenticated %}
-                	<div class="ml-auto navbar-nav">
+                	<div class="ms-auto navbar-nav">
                         <a href="#" class="nav-item nav-link">
-                            <span class="iconfont icon-lingdang"></span>
-                            <span id="notification-badge" class="badge badge-danger badge-notification">提醒</span>
-                        </a>&nbsp;&nbsp;
+                            <span class="iconfont icon-lingdang position-relative"></span>
+                            <span id="notification-badge" class=" hide badge badge-danger badge-notification">提醒</span>
+                        </a>
                         <a href="{{ url_for('main.upload') }}" class="nav-item nav-link" title="Upload">
                             <span class="iconfont icon-jiahao-"></span>
-                        </a>&nbsp;&nbsp;
-                        <a class="btn btn-outline-primary" href="{{ url_for('auth.logout') }}">Logout</a>&nbsp;&nbsp;
+                        </a>
+
                         <div class="dropdown nav-item">
-                            <a class="nav-link dropdown-toggle" data-bs-target="dropdown" role="button" aria-expanded="false" href="#">
-                                <img src="#" class="avatar-xs">
-                                <span class="caret"></span>
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" href="#">
+                                <img src="{{ url_for('main.get_avatar', filename=current_user.avatars_s) }}" class="avatar-xs">
+                                <span class="caret"></span>&nbsp;
                             </a>
-                            <div class="dropdown-menu dropdown-menu-right" role="menu">
+                            <ul class="dropdown-menu dropdown-menu-right show" role="menu">
                                 <h6 class="dropdown-header">Logged in as {{ current_user.username }}</h6>
-                                <a class="dropdown-item" href="#">
-                                    <span class="iconfont icon-solid-home">My Home</span>
-                                </a>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <span class="iconfont icon-solid-home">&nbsp;&nbsp;My Home</span>
+                                    </a>
+                                </li>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">
-                                    <span class="iconfont icon-shezhi">Settings</span>
-                                </a>
-                                <a class="dropdown-item" href="{{ url_for('auth.logout') }}">
-                                    <span class="iconfont icon-dianyuan">Logout</span>
-                                </a>
-                            </div>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <span class="iconfont icon-shezhi">&nbsp;&nbsp;Settings</span>
+                                    </a>
+                                </li>
+                                {% if current_user.can('MODERATE') %}
+                                    <li>
+                                        <a class="dropdown-item" href="#">
+                                            <span class="iconfont icon-ren">&nbsp;&nbsp;Dashboard</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('auth.logout') }}">
+                                        <span class="iconfont icon-dianyuan">&nbsp;&nbsp;Logout</span>
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                 {% else %}
                     <a class="btn btn-outline-primary" href="{{ url_for('auth.login') }}">Login</a>&nbsp;&nbsp;

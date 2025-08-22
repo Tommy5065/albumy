@@ -2,6 +2,8 @@ from datetime import datetime
 
 from flask import current_app
 from flask_login import UserMixin, AnonymousUserMixin
+from flask_avatars import Identicon
+
 from albumy.extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -17,6 +19,9 @@ class User(db.Model, UserMixin):
     bio = db.Column(db.String(120))
     member_since = db.Column(db.DateTime, default=datetime.utcnow())
     confirm_statue = db.Column(db.Boolean, default=False)
+    avatars_s = db.Column(db.String(64))
+    avatars_m = db.Column(db.String(64))
+    avatars_l = db.Column(db.String(64))
     roles_id = db.Column(db.Integer, db.ForeignKey('role.id'))
     roles = db.relationship('Role', back_populates='users')
     photos = db.relationship('Photo', back_populates='auth', cascade='all')
@@ -39,6 +44,17 @@ class User(db.Model, UserMixin):
         except Exception as e:
             db.session.rollback()
 
+    # 生成随机头像
+    def generate_avatars(self):
+        avatar = Identicon()
+        filename = avatar.generate(text=self.username)  # 以用户名作为文件名
+        self.avatars_s = filename[0]  # 从生成小尺寸文件开始
+        self.avatars_m = filename[1]
+        self.avatars_l = filename[2]
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
     # 验证用户权限
     @property
     def is_admin(self):
@@ -53,6 +69,7 @@ class User(db.Model, UserMixin):
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         self.set_role()
+        self.generate_avatars()
 
 # 角色模型类
 class Role(db.Model):
