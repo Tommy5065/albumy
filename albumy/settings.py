@@ -27,6 +27,8 @@ class BaseConfig:
     AVATARS_SAVE_PATH = os.path.join(ALBUMY_UPLOAD_PATH, 'avatars')
     AVATARS_SIZE_TUPLE= (30, 100, 200)  # 三种尺寸的图像大小
 
+    ALBUMY_IMAGE_PER_PAGE = 12
+
 class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URI')
 
