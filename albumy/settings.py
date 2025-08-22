@@ -18,6 +18,12 @@ class BaseConfig:
     DROPZONE_ENABLE_CSRF = True  # 在文件上传区域表单添加隐藏csrf令牌验证字段
     MAX_CONTENT_LENGTH = 3*1024*1024  # 在服务器端对文件传输大小过滤
     ALBUMY_UPLOAD_PATH = os.path.join(basedir, 'upload')
+    ALBUMY_IMAGE_SIZE = {'small': 400, 'medium': 800}
+    ALBUMY_IMAGE_SUFFIX = {
+        ALBUMY_IMAGE_SIZE['small']: '_s',
+        ALBUMY_IMAGE_SIZE['medium']: '_m'
+    }
+
 
 class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URI')

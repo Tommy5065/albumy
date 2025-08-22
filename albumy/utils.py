@@ -1,10 +1,11 @@
-import os.path
+import os
 import uuid
 
 from flask import current_app, request, redirect, url_for
 from authlib.jose import jwt, JoseError
 from urllib.parse import urlparse, urljoin
-
+import PIL
+from PIL import Image
 
 from albumy.settings import Operations
 from albumy.extensions import db
@@ -78,4 +79,17 @@ def random_filename(filename):
     new_filename = uuid.uuid4().hex + ext
     return new_filename
 
-
+def resize_image(image, filename, base_size):
+    """ 剪裁图片， 并为新剪裁的图片添加不同的后缀名 """
+    img = Image.open(image)
+    filename, etx = os.path.splitext(filename)
+    if img.size[1] <= base_size:
+        return filename + etx
+    # 宽度按比例剪裁
+    w_percent = (base_size/float(img.size[0]))
+    # 高度按照伸缩比自动生成
+    h_size = int((float(img.size[1])*float(w_percent)))
+    img = img.resize((base_size, h_size))
+    filename += current_app.config["ALBUMY_IMAGE_SUFFIX"][base_size] + etx
+    img.save(os.path.join(current_app.config["ALBUMY_UPLOAD_PATH"], filename), optimize=True, quality=85)
+    return filename

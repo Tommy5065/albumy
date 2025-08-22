@@ -113,7 +113,9 @@ class Guest(AnonymousUserMixin):
 class Photo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(500))
-    filename = db.Column(db.String(254))
+    filename = db.Column(db.String(60))
+    filename_s = db.Column(db.String(60))
+    filename_m = db.Column(db.String(60))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     auth_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     auth = db.relationship('User', back_populates='photos')
