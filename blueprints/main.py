@@ -21,28 +21,39 @@ def index():
 @confirm_required
 @permission_required('UPLOAD')
 def upload():
-    if request.method == 'POST' and 'file' in request.files:
-        file = request.files.get('file')
-        filename = file.filename
-        new_filename = random_filename(filename=filename)
-        file.save(os.path.join(current_app.config['ALBUMY_UPLOAD_PATH'], new_filename))
-        filename_s = resize_image(file, new_filename, 400)
-        filename_m = resize_image(file, new_filename, 800)
     try:
-        photo = Photo(
-            filename=new_filename,
-            filename_s=filename_s,
-            filename_m=filename_m,
-            auth=current_user
-        )
-        db.session.add(photo)
-        db.session.commit()
+        if request.method == 'POST' and 'file' in request.files:
+            file = request.files.get('file')
+            filename = file.filename
+            new_filename = random_filename(filename=filename)
+            file.save(os.path.join(current_app.config['ALBUMY_UPLOAD_PATH'], new_filename))
+            filename_s = resize_image(file, new_filename, 400)
+            filename_m = resize_image(file, new_filename, 800)
+
+            photo = Photo(
+                filename=new_filename,
+                filename_s=filename_s,
+                filename_m=filename_m,
+                auth=current_user
+            )
+            db.session.add(photo)
+            db.session.commit()
     except Exception:
         db.session.rollback()
 
     return render_template('main/upload.html')
 
-# 生成像static视图函数一样的资源指向
+
 @bp.route('/avatars/<path:filename>')
 def get_avatar(filename):
+    """生成像static视图函数一样的资源指向"""
     return send_from_directory(current_app.config["AVATARS_SAVE_PATH"], filename)
+
+@bp.route('/get_image/<path:filename>')
+def get_image(filename):
+    """获取图片资源"""
+    return send_from_directory(current_app.config['ALBUMY_UPLOAD_PATH'], filename)
+
+@bp.route('explore')
+def explore():
+    return render_template('main/explore.html')

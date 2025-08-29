@@ -1,0 +1,11 @@
+{% macro photo_card(photo) %}
+<div class="photo-card card">
+    <a class="card-thumbnail" href="{{ url_for('main.show_photo', photo_id=photo.id) }}">
+        <img src="{{ url_for('main.get_image', filename=photo.filename_s) }}" class="card-img-top portrait">
+    </a>
+    <div class="card-body">
+        <span class="iconfont icon-aixin1">{{ photo.collectors|length }}</span>
+        <span class="iconfont icon-B-liuyan">{{ photo.comments|length }}</span>
+    </div>
+</div>
+{% endmacro %}
