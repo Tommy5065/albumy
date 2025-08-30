@@ -10,7 +10,7 @@ from albumy.models import Role, Guest
 
 from blueprints.main import bp as main_bp
 from blueprints.auth import bp as auth_bp
-
+from blueprints.user import bp as user_bp
 
 def create_app(Config_name=None):
 
@@ -66,6 +66,7 @@ def create_app(Config_name=None):
     def register_blueprint(app):
        app.register_blueprint(main_bp)
        app.register_blueprint(auth_bp, url_prefix='/auth')
+       app.register_blueprint(user_bp, url_prefix='/user')
 
     register_extensions(app)
     register_errors(app)
@@ -75,7 +76,7 @@ def create_app(Config_name=None):
     login_manager.login_view = 'auth.login'
     login_manager.login_message = 'Please login firstly'
     login_manager.login_message_category = 'warning'
-    login_manager.anonymous_user = Guest
+    login_manager.anonymous_user = Guest  # 为未登录的匿名游客指向特定的类
 
     return app
 

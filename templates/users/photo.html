@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% from 'bootstrap4/pagination.html' import render_pagination %}
+
+{% block title %} {{ photo.auth.name }}'s Photo {% endblock %}
+
+{% block content %}
+	<div class="row">
+        <div class="col-md-8">
+            <div class="photo">
+                <a href="{{ url_for('.get_image', filename=photo.filename)}}" target="_blank">
+                    <img src="{{ url_for('.get_image', filename=photo.filename_m) }}">
+                </a>
+            </div>
+            <a class="btn btn-light btn-sm" data-bs-target="#share-Modal" data-bs-toggle="modal">Share</a>
+            <p class="text-muted float-right small">
+                <span class="iconfont icon-rili"> Upload at {{ moment(photo.timestamp).format('LL') }} </span>
+            </p>
+            {% include 'main/_comments.html' %}
+        </div>
+        <div class="col-md-4">
+            {% include 'main/_photo_sidebar.html' %}
+        </div>
+    </div>
+    {# share modal #}
+{% endblock %}

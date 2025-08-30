@@ -12,4 +12,4 @@ def index(username):
     per_page = current_app.config["ALBUMY_IMAGE_PER_PAGE"]
     pagination = Photo.query.with_parent(user).order_by(Photo.timestamp.desc()).paginate(page=page, per_page=per_page)
     photos = pagination.items
-    return render_template('users/_header.html', user=user, photos=photos, pagination=pagination)
+    return render_template('users/index.html', user=user, photos=photos, pagination=pagination)
