@@ -1,8 +1,9 @@
+
 {% from 'bootstrap4/nav.html' import render_nav_item %}
 
 <div class="row">
     <div class="col-md-3">
-        <img src="{{ url_for('main.get_avatar', filename=user.avatars_l) }}">
+        <img src="{{ url_for('main.get_avatar', filename=user.avatars_l) }}" class="img-fluid rounded avatar-l">
     </div>
     <div class="col-md-9">
         <h1>
@@ -17,10 +18,11 @@
             {% endif %}
             {% if user.location %}
                 <span class="iconfont"></span>
-                <a href="https://www.google.com/maps?q={{ user.location }}" target="_blank">{{ user.location|truncate(26) }}</a>
+                <a href="https://www.google.com/maps?q={{ user.location }}" target="_blank">{{ user.location|truncate(26) }}</a>&nbsp;&nbsp;
             {% endif %}
-            <span class="iconfont"></span>
-            Joined {{ moment(user.member_since).format("LL") }}
+            <span class="iconfont icon-rili">
+                Joined {{ moment(user.member_since).format("LL") }}
+            </span>
         </p>
     </div>
 </div>

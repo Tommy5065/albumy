@@ -55,7 +55,7 @@
                             <ul class="dropdown-menu dropdown-menu-right show" role="menu">
                                 <h6 class="dropdown-header">Logged in as {{ current_user.username }}</h6>
                                 <li>
-                                    <a class="dropdown-item" href="#">
+                                    <a class="dropdown-item" href="{{ url_for('user.index', username=current_user.username) }}">
                                         <span class="iconfont icon-solid-home">&nbsp;&nbsp;My Home</span>
                                     </a>
                                 </li>

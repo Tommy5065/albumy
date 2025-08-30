@@ -54,6 +54,11 @@ def get_image(filename):
     """获取图片资源"""
     return send_from_directory(current_app.config['ALBUMY_UPLOAD_PATH'], filename)
 
-@bp.route('explore')
+@bp.route('/explore')
 def explore():
     return render_template('main/explore.html')
+
+@bp.route('/photo/<int:photo_id>')
+def show_photo(photo_id):
+    photo = Photo.query.get_or_404(photo_id)
+    return render_template('users/photo.html', photo=photo)
