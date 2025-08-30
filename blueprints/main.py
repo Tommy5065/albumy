@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, render_template, request, current_app, send_from_directory
+from flask import Blueprint, render_template, request, current_app, send_from_directory, flash, redirect, url_for
 from flask_login import login_required, current_user
 
 from albumy.utils import random_filename, resize_image
@@ -62,3 +62,23 @@ def explore():
 def show_photo(photo_id):
     photo = Photo.query.get_or_404(photo_id)
     return render_template('users/photo.html', photo=photo)
+
+@bp.route('/photo/n/<int:photo_id>')
+def photo_next(photo_id):
+    photo = Photo.query.get_or_404(photo_id)
+    photo_n = Photo.query.with_parent(photo.auth).filter(Photo.id > photo.id).order_by(Photo.timestamp.asc()).first()
+    if photo_n is None:
+        flash('This is latest picture', 'info')
+        return redirect(url_for('.show_photo', photo_id=photo.id))
+
+    return redirect(url_for('.show_photo', photo_id=photo_n.id))
+
+@bp.route('/photo/p/<int:photo_id>')
+def photo_previous(photo_id):
+    photo = Photo.query.get_or_404(photo_id)
+    photo_p = Photo.query.with_parent(photo.auth).filter(Photo.id < photo.id).order_by(Photo.timestamp.desc()).first()
+    if photo_p is None:
+        flash('This is already first one', 'info')
+        return redirect(url_for('.show_photo', photo_id=photo.id))
+
+    return redirect(url_for('.show_photo', photo_id=photo_p.id))
