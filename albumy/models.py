@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 
 from flask import current_app
@@ -136,3 +137,13 @@ class Photo(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     auth_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     auth = db.relationship('User', back_populates='photos')
+
+@db.event.listens_for(Photo, 'after_delete', named=True)
+def delete_photos(**kwargs):
+    """为Photo模型创建事件监听事件，照片被删除了，对应文件夹的照片也要被删除"""
+    target = kwargs['target']
+    for filename in [target.filename, target.filename_s, target.filename_m]:
+        if filename is not None:
+            path = os.path.join(current_app.config['ALBUMY_UPLOAD_PATH'], filename)
+            if os.path.exists(path):
+                os.remove(path)

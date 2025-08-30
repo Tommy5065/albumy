@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, render_template, request, current_app, send_from_directory, flash, redirect, url_for
+from flask import Blueprint, render_template, request, current_app, send_from_directory, flash, redirect, url_for, abort
 from flask_login import login_required, current_user
 
 from albumy.utils import random_filename, resize_image
@@ -82,3 +82,28 @@ def photo_previous(photo_id):
         return redirect(url_for('.show_photo', photo_id=photo.id))
 
     return redirect(url_for('.show_photo', photo_id=photo_p.id))
+
+@bp.route('/photo_delete/<int:photo_id>', methods=['POST', 'GET'])
+def photo_delete(photo_id):
+    if request.method == 'POST':
+        photo = Photo.query.first_or_404(photo_id)
+        if current_user != photo.auth:
+            abort(404)
+        try:
+            db.session.delete(photo)
+            db.session.commit()
+            flash('Delete photo successfully', 'successful')
+        except Exception:
+            db.session.rollback()
+
+        # 删除图片后切换成下一张图片的详情页
+        photo_n = Photo.query.with_parent(photo.auth).filter(Photo.id > photo.id).order_by(Photo.timestamp.asc()).first()
+        if photo_n is None:
+            # 如果没有下一张了就切换成上一张的详情页
+            photo_p = Photo.query.with_parent(photo.auth).filter(Photo.id < photo.id).order_by(Photo.timestamp.desc()).first()
+            if photo_p is None:
+                # 上一张也没有就返回主页
+                return redirect(url_for('user.index', username=photo.auth.username))
+            return redirect(url_for('.show_photo', photo_id=photo_p.id))
+
+        return redirect(url_for('.show_photo', photo_id=photo_n.id))
