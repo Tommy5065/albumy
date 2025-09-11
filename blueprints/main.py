@@ -8,14 +8,17 @@ from albumy.models import Photo
 from albumy.extensions import db
 bp = Blueprint('main', __name__)
 
+
 @bp.before_request
 @login_required
 def login():
     pass
 
+
 @bp.route('/')
 def index():
     return render_template('main/index.html')
+
 
 @bp.route('/upload', methods=['POST', 'GET'])
 @confirm_required
@@ -26,7 +29,8 @@ def upload():
             file = request.files.get('file')
             filename = file.filename
             new_filename = random_filename(filename=filename)
-            file.save(os.path.join(current_app.config['ALBUMY_UPLOAD_PATH'], new_filename))
+            file.save(os.path.join(
+                current_app.config['ALBUMY_UPLOAD_PATH'], new_filename))
             filename_s = resize_image(file, new_filename, 400)
             filename_m = resize_image(file, new_filename, 800)
 
@@ -49,39 +53,47 @@ def get_avatar(filename):
     """生成像static视图函数一样的资源指向"""
     return send_from_directory(current_app.config["AVATARS_SAVE_PATH"], filename)
 
+
 @bp.route('/get_image/<path:filename>')
 def get_image(filename):
     """获取图片资源"""
     return send_from_directory(current_app.config['ALBUMY_UPLOAD_PATH'], filename)
 
+
 @bp.route('/explore')
 def explore():
     return render_template('main/explore.html')
+
 
 @bp.route('/photo/<int:photo_id>')
 def show_photo(photo_id):
     photo = Photo.query.get_or_404(photo_id)
     return render_template('users/photo.html', photo=photo)
 
+
 @bp.route('/photo/n/<int:photo_id>')
 def photo_next(photo_id):
     photo = Photo.query.get_or_404(photo_id)
-    photo_n = Photo.query.with_parent(photo.auth).filter(Photo.id > photo.id).order_by(Photo.timestamp.asc()).first()
+    photo_n = Photo.query.with_parent(photo.auth).filter(
+        Photo.id > photo.id).order_by(Photo.timestamp.asc()).first()
     if photo_n is None:
         flash('This is latest picture', 'info')
         return redirect(url_for('.show_photo', photo_id=photo.id))
 
     return redirect(url_for('.show_photo', photo_id=photo_n.id))
 
+
 @bp.route('/photo/p/<int:photo_id>')
 def photo_previous(photo_id):
     photo = Photo.query.get_or_404(photo_id)
-    photo_p = Photo.query.with_parent(photo.auth).filter(Photo.id < photo.id).order_by(Photo.timestamp.desc()).first()
+    photo_p = Photo.query.with_parent(photo.auth).filter(
+        Photo.id < photo.id).order_by(Photo.timestamp.desc()).first()
     if photo_p is None:
         flash('This is already first one', 'info')
         return redirect(url_for('.show_photo', photo_id=photo.id))
 
     return redirect(url_for('.show_photo', photo_id=photo_p.id))
+
 
 @bp.route('/photo_delete/<int:photo_id>', methods=['POST', 'GET'])
 def photo_delete(photo_id):
@@ -97,13 +109,26 @@ def photo_delete(photo_id):
             db.session.rollback()
 
         # 删除图片后切换成下一张图片的详情页
-        photo_n = Photo.query.with_parent(photo.auth).filter(Photo.id > photo.id).order_by(Photo.timestamp.asc()).first()
+        photo_n = Photo.query.with_parent(photo.auth).filter(
+            Photo.id > photo.id).order_by(Photo.timestamp.asc()).first()
         if photo_n is None:
             # 如果没有下一张了就切换成上一张的详情页
-            photo_p = Photo.query.with_parent(photo.auth).filter(Photo.id < photo.id).order_by(Photo.timestamp.desc()).first()
+            photo_p = Photo.query.with_parent(photo.auth).filter(
+                Photo.id < photo.id).order_by(Photo.timestamp.desc()).first()
             if photo_p is None:
                 # 上一张也没有就返回主页
                 return redirect(url_for('user.index', username=photo.auth.username))
             return redirect(url_for('.show_photo', photo_id=photo_p.id))
 
         return redirect(url_for('.show_photo', photo_id=photo_n.id))
+
+
+@bp.route('/report/photo/<int:photo_id>', methods=['POST'])
+@confirm_required
+def report_photo(photo_id):
+    """记录图片被举报次数 """
+    photo = Photo.query.get_or_404(photo_id)
+    photo.flag += 1
+    db.session.commit()
+    flash("report photo success", 'successful')
+    return redirect(url_for('.show_photo', photo_id=photo.id))

@@ -4,59 +4,66 @@
 {% block title %} {{ photo.auth.name }}'s Photo {% endblock %}
 
 {% block content %}
-	<div class="row">
-        <div class="col-md-8">
-            <div class="photo">
-                <a href="{{ url_for('.get_image', filename=photo.filename)}}" target="_blank">
-                    <img src="{{ url_for('.get_image', filename=photo.filename_m) }}">
-                </a>
-            </div>
-            <a class="btn btn-light btn-sm" data-bs-target="#share-Modal" data-bs-toggle="modal">Share</a>
-            {% if current_user == photo.auth %}
-            <a class="btn btn-danger btn-sm text-white" data-target="#confirm-delete" data-toggle="modal" data-href="{{ url_for('main.photo_delete', photo_id=photo.id) }}" >Delete</a>
-            {% endif %}
-            <p class="text-muted float-right small">
-                <span class="iconfont icon-rili"> Upload at {{ moment(photo.timestamp).format('LL') }} </span>
-            </p>
-            {% include 'main/_comments.html' %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="photo">
+            <a href="{{ url_for('.get_image', filename=photo.filename)}}" target="_blank">
+                <img src="{{ url_for('.get_image', filename=photo.filename_m) }}">
+            </a>
         </div>
-        <div class="col-md-4">
-            {% include 'main/_photo_sidebar.html' %}
+        <a class="btn btn-light btn-sm" data-bs-target="#share-Modal" data-bs-toggle="modal">Share</a>
+        {% if current_user == photo.auth %}
+        <a class="btn btn-danger btn-sm text-white" data-target="#confirm-delete" data-toggle="modal"
+            data-href="{{ url_for('main.photo_delete', photo_id=photo.id) }}">Delete</a>
+        {% endif %}
+        <form class="inline" action="{{ url_for('main.report_photo', photo_id=photo.id) }}" , method="post">
+            <input name="csrf_token" , value="{{csrf_token()}}" , type="hidden">
+            <button type="submit" , class="btn btn-sm btn-link">Report</button>
+        </form>
+
+        <p class="text-muted float-right small">
+            <span class="iconfont icon-rili"> Upload at {{ moment(photo.timestamp).format('LL') }} </span>
+        </p>
+        {% include 'main/_comments.html' %}
+    </div>
+    <div class="col-md-4">
+        {% include 'main/_photo_sidebar.html' %}
+    </div>
+</div>
+{# share modal #}
+
+{# confirm-delete #}
+<div id="confirm-delete" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"
+    aria-labelledby="confirmModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Delete Confirm</h5>
+                <button type="button" class="close" aria-label="Close" data-bs-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this item?</p>
+            </div>
+            <div class="modal-footer">
+                <form class="delete-form" action="" method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn-default btn" type="button" data-bs-dismiss="Modal">Cansel</button>
+                    <button class="btn btn-danger btn-confirm" type="submit">Delete</button>
+                </form>
+            </div>
         </div>
     </div>
-    {# share modal #}
-
-    {# confirm-delete #}
-    	<div id="confirm-delete" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="confirmModalLabel">
-            <div class="modal-dialog modal-sm">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="confirmModalLabel">Delete Confirm</h5>
-                        <button type="button" class="close" aria-label="Close" data-bs-dismiss="modal">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Are you sure you want to delete this item?</p>
-                    </div>
-                    <div class="modal-footer">
-                        <form class="delete-form" action="" method="post">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" >
-                            <button class="btn-default btn" type="button" data-bs-dismiss="Modal" >Cansel</button>
-                            <button class="btn btn-danger btn-confirm" type="submit">Delete</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
-	{{ super() }}
-    <script>
+{{ super() }}
+<script>
     <!-- 删除表单的目标Url属性action为空，把这个action这个属性的值替换成打开模态框按钮元素的data-href属性的值 -->
-        $('#confirm-delete').on('show.bs.modal', function (e){
-            $('.delete-form').attr('action', $(e.relatedTarget).data('href'));
-        });
-    </script>
+    $('#confirm-delete').on('show.bs.modal', function (e) {
+        $('.delete-form').attr('action', $(e.relatedTarget).data('href'));
+    });
+</script>
 {% endblock %}
