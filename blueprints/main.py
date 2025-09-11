@@ -128,7 +128,7 @@ def photo_delete(photo_id):
 def report_photo(photo_id):
     """记录图片被举报次数 """
     photo = Photo.query.get_or_404(photo_id)
-    photo.flag += 1
+    photo.flag = (photo.flag or 0)+1
     db.session.commit()
     flash("report photo success", 'successful')
     return redirect(url_for('.show_photo', photo_id=photo.id))

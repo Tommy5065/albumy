@@ -153,7 +153,7 @@ class Photo(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     auth_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     auth = db.relationship('User', back_populates='photos')
-    flag = db.Column(db.Integer)
+    flag = db.Column(db.Integer, default=0)
 
 
 @db.event.listens_for(Photo, 'after_delete', named=True)
