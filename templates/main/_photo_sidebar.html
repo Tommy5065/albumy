@@ -1,3 +1,6 @@
+{% from 'bootstrap/form.html' import render_field %}
+
+
 <nav aria-label="Page navigation">
     <ul class="pagination">
         <li class="page-item">
@@ -14,7 +17,7 @@
         <div class="row row-cols-auto">
             <div class="col">
                 <a href="{{ url_for('user.index', username=photo.auth.name) }}">
-                    <img class="round avatar-m" src="{{url_for('main.get_avatar', filename=photo.auth.avatar_s)}}">
+                    <img class="round avatar-m" src="{{url_for('main.get_avatar', filename=photo.auth.avatar_m)}}">
                 </a>
             </div>
             <div class="col">
@@ -36,10 +39,34 @@
                 {% else %}
                 No description
                 {% endif %}
+                {% if current_user == photo.auth %}
                 <a href="#" id="description-btn">
-                    <small><span class="iconfont "></span></small>
+                    <small><span class="iconfont icon-bianji"></span></small>
                 </a>
+                {% endif %}
             </p>
+            {% if current_user == photo.auth %}
+            <div id="description-form">
+                <form action="{{ url_for('.edit_description', photo_id=photo.id) }}" method="post">
+                    {{ description_form.csrf_token }}
+                    {{ render_field(description_form.description) }}
+                    <a id="description-cancel" class="btn btn-light btn-sm">Cancel</a>
+                    {{ render_field(description_form.submit, class="btn btn-success btn-sm") }}
+                </form>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
+
+<script>
+    $('#description-btn').click(function () {
+        $('#description').hide();
+        $('#description-form').show();
+    });
+
+    $('#description-cancel').click(function () {
+        $('#description-form').hide();
+        $('#desciption').show()
+    })
+</script>

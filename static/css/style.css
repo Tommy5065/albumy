@@ -1,6 +1,7 @@
 /* global */
 
-.tip { /* from github.com */
+.tip {
+    /* from github.com */
     position: relative;
     padding: 40px;
     text-align: center;
@@ -274,12 +275,14 @@ footer {
 }
 
 /* Photo Page */
-#tag-form, #description-form {
+#tag-form,
+#description-form {
     display: none;
     margin: 20px 0;
 }
 
-#toast { /* form w3school.com */
+#toast {
+    /* form w3school.com */
     display: none;
     min-width: 200px;
     margin-left: -125px;
@@ -298,8 +301,12 @@ footer {
     position: relative;
 }
 
-#search> button {
+#search>button {
     position: absolute;
     top: 0px;
     left: 221px;
+}
+
+#description-form {
+    display: none;
 }

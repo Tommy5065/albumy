@@ -6,6 +6,9 @@ from albumy.utils import random_filename, resize_image
 from albumy.decorators import confirm_required, permission_required
 from albumy.models import Photo
 from albumy.extensions import db
+
+from forms.user import DescriptionForm
+
 bp = Blueprint('main', __name__)
 
 
@@ -68,7 +71,9 @@ def explore():
 @bp.route('/photo/<int:photo_id>')
 def show_photo(photo_id):
     photo = Photo.query.get_or_404(photo_id)
-    return render_template('users/photo.html', photo=photo)
+    description_form = DescriptionForm()
+    description_form.description.data = photo.description
+    return render_template('users/photo.html', photo=photo, description_form=description_form)
 
 
 @bp.route('/photo/n/<int:photo_id>')
@@ -131,4 +136,20 @@ def report_photo(photo_id):
     photo.flag = (photo.flag or 0)+1
     db.session.commit()
     flash("report photo success", 'successful')
+    return redirect(url_for('.show_photo', photo_id=photo.id))
+
+
+@bp.route('/photo/<int:photo_id>/description', methods=['POST'])
+@confirm_required
+def edit_description(photo_id):
+    photo = Photo.query.get_or_404(photo_id)
+    if current_user != photo.auth:
+        abort(403)
+
+    form = DescriptionForm()
+    if form.validate_on_submit:
+        photo.description = form.description.data
+        db.session.commit()
+        flash('description photo success!', 'successful')
+
     return redirect(url_for('.show_photo', photo_id=photo.id))
