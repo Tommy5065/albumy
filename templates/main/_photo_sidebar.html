@@ -1,4 +1,4 @@
-{% from 'bootstrap/form.html' import render_field %}
+{% from 'bootstrap4/form.html' import render_field %}
 
 
 <nav aria-label="Page navigation">
@@ -16,8 +16,8 @@
     <div class="card-body">
         <div class="row row-cols-auto">
             <div class="col">
-                <a href="{{ url_for('user.index', username=photo.auth.name) }}">
-                    <img class="round avatar-m" src="{{url_for('main.get_avatar', filename=photo.auth.avatar_m)}}">
+                <a href="{{ url_for('user.index', username=photo.auth.username) }}">
+                    <img class="round avatar-m" src="{{url_for('main.get_avatar', filename=photo.auth.avatars_m)}}">
                 </a>
             </div>
             <div class="col">
@@ -45,28 +45,16 @@
                 </a>
                 {% endif %}
             </p>
-            {% if current_user == photo.auth %}
-            <div id="description-form">
-                <form action="{{ url_for('.edit_description', photo_id=photo.id) }}" method="post">
-                    {{ description_form.csrf_token }}
-                    {{ render_field(description_form.description) }}
-                    <a id="description-cancel" class="btn btn-light btn-sm">Cancel</a>
-                    {{ render_field(description_form.submit, class="btn btn-success btn-sm") }}
-                </form>
-            </div>
-            {% endif %}
         </div>
+        {% if current_user == photo.auth %}
+        <div id="description-form">
+            <form action="{{ url_for('.edit_description', photo_id=photo.id) }}" method="post">
+                {{ description_form.csrf_token }}
+                {{ render_field(description_form.description, id="description") }}
+                <a id="description-cancel" class="btn btn-light btn-sm">Cancel</a>
+                {{ render_field(description_form.submit, class="btn btn-success btn-sm") }}
+            </form>
+        </div>
+        {% endif %}
     </div>
 </div>
-
-<script>
-    $('#description-btn').click(function () {
-        $('#description').hide();
-        $('#description-form').show();
-    });
-
-    $('#description-cancel').click(function () {
-        $('#description-form').hide();
-        $('#desciption').show()
-    })
-</script>
