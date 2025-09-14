@@ -1,27 +1,27 @@
 {% extends 'base.html' %}
 
 {% block style %}
-	{{ super() }}
+{{ super() }}
 <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
-    {{ dropzone.style('margin: 20px 0; border:2px dashed #0087f7; min-height:400px;') }}
+{{ dropzone.style('margin: 20px 0; border:2px dashed #0087f7; min-height:400px;') }}
 {% endblock %}
 
 {% block title %}Upload{% endblock %}
 
 {% block content %}
-	<div class="page-header">
-        <h1>Upload</h1>
+<div class="page-header">
+    <h1>Upload</h1>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        {{ dropzone.create(action='main.upload') }}
+        <a href="{{ url_for('user.index', username=current_user.username) }}" class="btn btn-light float-right">Done</a>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            {{ dropzone.create(action='main.upload') }}
-            <a href="#" class="btn btn-light float-right">Done</a>
-        </div>
-    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
-	{{ super() }}
-    <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
-    {{ dropzone.config() }}
+{{ super() }}
+<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+{{ dropzone.config() }}
 {% endblock %}
