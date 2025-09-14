@@ -46,13 +46,37 @@
                 {% endif %}
             </p>
         </div>
+        <div id="tag">
+            <p>
+                {% if photo.tags %}
+                {% for tag in photo.tags %}
+                {{ tag }}
+                {% endfor %}
+                {% else %}
+                No tags
+                {% endif %}
+                {% if current_user == photo.auth %}
+                <a href="#" id="tag-btn">
+                    <small><span class="iconfont icon-bianji"></span></small>
+                </a>
+                {% endif %}
+            </p>
+        </div>
         {% if current_user == photo.auth %}
         <div id="description-form">
             <form action="{{ url_for('.edit_description', photo_id=photo.id) }}" method="post">
                 {{ description_form.csrf_token }}
-                {{ render_field(description_form.description, id="description") }}
+                {{ render_field(description_form.description) }}
                 <a id="description-cancel" class="btn btn-light btn-sm">Cancel</a>
                 {{ render_field(description_form.submit, class="btn btn-success btn-sm") }}
+            </form>
+        </div>
+        <div id="tag-form">
+            <form action="{{ url_for('main.new_tag', photo_id=photo.id) }}" method="post">
+                {{ tag_form.csrf_token }}
+                {{ render_field(tag_form.tag) }}
+                <a id="tag-cancel" class="btn btn-light btn-sm">Cancel</a>
+                {{ render_field(tag_form.submit, class='btn btn-success btn-sm') }}
             </form>
         </div>
         {% endif %}

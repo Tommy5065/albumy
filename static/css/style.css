@@ -275,7 +275,11 @@ footer {
 }
 
 /* Photo Page */
-#tag-form,
+#tag-form {
+    display: none;
+    margin: 20px 0;
+}
+
 #description-form {
     display: none;
     margin: 20px 0;

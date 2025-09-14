@@ -76,5 +76,15 @@
         $('#description').show();
 
     })
+
+    $('#tag-cancel').click(function () {
+        $('#tag-form').hide();
+        $('#tag').show();
+    })
+
+    $('#tag-btn').click(function () {
+        $('#tag').hide();
+        $('#tag-form').show();
+    })
 </script>
 {% endblock %}

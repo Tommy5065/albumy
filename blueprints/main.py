@@ -4,10 +4,10 @@ from flask_login import login_required, current_user
 
 from albumy.utils import random_filename, resize_image
 from albumy.decorators import confirm_required, permission_required
-from albumy.models import Photo
+from albumy.models import Photo, Tag
 from albumy.extensions import db
 
-from forms.user import DescriptionForm
+from forms.user import DescriptionForm, TagForm
 
 bp = Blueprint('main', __name__)
 
@@ -45,6 +45,7 @@ def upload():
             )
             db.session.add(photo)
             db.session.commit()
+
     except Exception:
         db.session.rollback()
 
@@ -72,8 +73,9 @@ def explore():
 def show_photo(photo_id):
     photo = Photo.query.get_or_404(photo_id)
     description_form = DescriptionForm()
+    tag_form = TagForm()
     description_form.description.data = photo.description
-    return render_template('users/photo.html', photo=photo, description_form=description_form)
+    return render_template('users/photo.html', photo=photo, description_form=description_form, tag_form=tag_form)
 
 
 @bp.route('/photo/n/<int:photo_id>')
@@ -151,5 +153,28 @@ def edit_description(photo_id):
         photo.description = form.description.data
         db.session.commit()
         flash('description photo success!', 'successful')
+
+    return redirect(url_for('.show_photo', photo_id=photo.id))
+
+
+@bp.route('/photo/<int:photo_id>/tag', methods=['POST'])
+@confirm_required
+def new_tag(photo_id):
+    photo = Photo.query.get_or_404(photo_id)
+    if current_user != photo.auth:
+        abort(403)
+
+    form = TagForm()
+    if form.validate_on_submit:
+        for name in form.tag.data.split():
+            tag = Tag.query.filter_by(tag=name).first()
+            if tag is None:
+                new_tag = Tag(tag=name)
+                db.session.add(new_tag)
+                db.session.commit()
+            if tag not in photo.tags:
+                photo.tags.append(tag)
+                db.session.commit()
+        flash('add tag successful!', 'successful')
 
     return redirect(url_for('.show_photo', photo_id=photo.id))

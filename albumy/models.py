@@ -59,8 +59,8 @@ class User(db.Model, UserMixin):
             db.session.commit()
         except Exception:
             db.session.rollback()
-    # 验证用户权限
 
+    # 验证用户权限
     @property
     def is_admin(self):
         return self.roles.name == 'Administrator'
@@ -141,9 +141,17 @@ class Guest(AnonymousUserMixin):
     def can(self, permission_name):
         return False
 
+# 标签类
+
+
+class Tag(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    tag = db.Column(db.String(30), index=True)
+    photos = db.relationship(
+        'Photo', secondary='Photo_Tag', back_populates='tags')
+
+
 # 图片类
-
-
 class Photo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(500))
@@ -154,6 +162,8 @@ class Photo(db.Model):
     auth_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     auth = db.relationship('User', back_populates='photos')
     flag = db.Column(db.Integer, default=0)
+    tags = db.relationship('Tag', secondary='Photo_Tag',
+                           back_populates='photos')
 
 
 @db.event.listens_for(Photo, 'after_delete', named=True)
@@ -166,3 +176,11 @@ def delete_photos(**kwargs):
                 current_app.config['ALBUMY_UPLOAD_PATH'], filename)
             if os.path.exists(path):
                 os.remove(path)
+
+
+# 标签与图片关联表
+Photo_Tag = db.Table('Photo_Tag',
+                     db.Column('tag_id', db.Integer, db.ForeignKey('tag.id')),
+                     db.Column('photo_id', db.Integer,
+                               db.ForeignKey('photo.id'))
+                     )
