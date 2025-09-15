@@ -179,3 +179,21 @@ def new_tag(photo_id):
         flash('add tag successful!', 'successful')
 
     return redirect(url_for('.show_photo', photo_id=photo.id))
+
+
+@bp.route('/delete/tag/<int:tag_id>/<int:photo_id>', methods=['GET'])
+@confirm_required
+def delete_tag(tag_id, photo_id):
+    tag = Tag.query.get_or_404(tag_id)
+    photo = Photo.query.get_or_404(photo_id)
+    if current_user != photo.auth:
+        abort(403)
+
+    photo.tags.remove(tag)
+    db.session.commit
+
+    if not tag.photos:
+        db.session.delete(tag)
+        db.session.commit()
+    flash('Delete tag successful!', 'info')
+    return redirect(url_for('.show_photo', photo_id=photo.id))

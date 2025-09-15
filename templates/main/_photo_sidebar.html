@@ -50,35 +50,44 @@
             <p>
                 {% if photo.tags %}
                 {% for tag in photo.tags %}
-                {{ tag }}
+                <a class="badge text-bg-secondary rounded-pill text-decoration-none" href="#">
+                    <span class="iconfont icon-biaoqian">{{ tag.tag }}</span>
+                </a>
                 {% endfor %}
                 {% else %}
                 No tags
                 {% endif %}
-                {% if current_user == photo.auth %}
-                <a href="#" id="tag-btn">
+                <a id="tag-btn" href="#">
                     <small><span class="iconfont icon-bianji"></span></small>
                 </a>
-                {% endif %}
             </p>
         </div>
-        {% if current_user == photo.auth %}
-        <div id="description-form">
-            <form action="{{ url_for('.edit_description', photo_id=photo.id) }}" method="post">
-                {{ description_form.csrf_token }}
-                {{ render_field(description_form.description) }}
-                <a id="description-cancel" class="btn btn-light btn-sm">Cancel</a>
-                {{ render_field(description_form.submit, class="btn btn-success btn-sm") }}
-            </form>
-        </div>
-        <div id="tag-form">
-            <form action="{{ url_for('main.new_tag', photo_id=photo.id) }}" method="post">
-                {{ tag_form.csrf_token }}
-                {{ render_field(tag_form.tag) }}
-                <a id="tag-cancel" class="btn btn-light btn-sm">Cancel</a>
-                {{ render_field(tag_form.submit, class='btn btn-success btn-sm') }}
-            </form>
-        </div>
-        {% endif %}
     </div>
+    {% if current_user == photo.auth %}
+    <div id="description-form">
+        <form action="{{ url_for('.edit_description', photo_id=photo.id) }}" method="post">
+            {{ description_form.csrf_token }}
+            {{ render_field(description_form.description) }}
+            <a id="description-cancel" class="btn btn-light btn-sm">Cancel</a>
+            {{ render_field(description_form.submit, class="btn btn-success btn-sm") }}
+        </form>
+    </div>
+    <div id="tag-form">
+        <form action="{{ url_for('main.new_tag', photo_id=photo.id) }}" method="post">
+            {{ tag_form.csrf_token }}
+            {{ render_field(tag_form.tag) }}
+            <a id="tag-cancel" class="btn btn-light btn-sm">Cancel</a>
+            {{ render_field(tag_form.submit, class='btn btn-success btn-sm') }}
+            <hr>
+            {% if photo.tags %}
+            {% for tag in photo.tags %}
+            <a class="dead-link" href="{{ url_for('.delete_tag', photo_id=photo.id, tag_id=tag.id) }}">
+                <span class="badge text-bg-danger rounded-pill iconfont icon-icon">{{tag.tag}}</span>
+            </a>
+            {% endfor %}
+            {% endif %}
+        </form>
+    </div>
+    {% endif %}
+</div>
 </div>
