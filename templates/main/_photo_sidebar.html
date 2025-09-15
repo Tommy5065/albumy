@@ -50,7 +50,8 @@
             <p>
                 {% if photo.tags %}
                 {% for tag in photo.tags %}
-                <a class="badge text-bg-secondary rounded-pill text-decoration-none" href="#">
+                <a class="badge text-bg-secondary rounded-pill text-decoration-none"
+                    href="{{ url_for('.show_tag', tag_id=tag.id) }}">
                     <span class="iconfont icon-biaoqian">{{ tag.tag }}</span>
                 </a>
                 {% endfor %}

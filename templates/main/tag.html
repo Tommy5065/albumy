@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %} {{tag.tag}} {% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>
+        #{{ tag.tag }}
+
+        <small class="text-muted fs-6">{{ tag.photos|length }} photos </small>
+        <span class="dropdown">
+            <button class="btn btn-secondary btn-sm" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown">
+                Order {{ order_rule }}
+                <small class="iconfont icon-shangxiala"></small>
+            </button>
+        </span>
+
+    </h1>
+</div>
+{% endblock %}
