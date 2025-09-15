@@ -169,12 +169,13 @@ def new_tag(photo_id):
         for name in form.tag.data.split():
             tag = Tag.query.filter_by(tag=name).first()
             if tag is None:
-                new_tag = Tag(tag=name)
-                db.session.add(new_tag)
-                db.session.commit()
+                tag = Tag(tag=name)
+                db.session.add(tag)
+
             if tag not in photo.tags:
                 photo.tags.append(tag)
-                db.session.commit()
+
+            db.session.commit()
         flash('add tag successful!', 'successful')
 
     return redirect(url_for('.show_photo', photo_id=photo.id))
