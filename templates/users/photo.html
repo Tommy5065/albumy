@@ -19,7 +19,7 @@
         {% endif %}
         <form class="inline" action="{{ url_for('main.report_photo', photo_id=photo.id) }}" , method="post">
             <input name="csrf_token" , value="{{csrf_token()}}" , type="hidden">
-            <button type="submit" , class="btn btn-sm btn-link">Report</button>
+            <button type="submit" , class="btn btn-light btn-sm">Report</button>
         </form>
 
         <p class="text-muted float-right small">
