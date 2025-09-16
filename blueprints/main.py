@@ -4,10 +4,10 @@ from flask_login import login_required, current_user
 
 from albumy.utils import random_filename, resize_image
 from albumy.decorators import confirm_required, permission_required
-from albumy.models import Photo, Tag
+from albumy.models import Photo, Tag, Comment
 from albumy.extensions import db
 
-from forms.user import DescriptionForm, TagForm
+from forms.user import DescriptionForm, TagForm, CommentForm
 
 bp = Blueprint('main', __name__)
 
@@ -70,12 +70,20 @@ def explore():
 
 
 @bp.route('/photo/<int:photo_id>')
+@permission_required('COMMENT')
 def show_photo(photo_id):
     photo = Photo.query.get_or_404(photo_id)
     description_form = DescriptionForm()
     tag_form = TagForm()
+    comment_form = CommentForm()
+    page = request.args.get('page', 1, type=int)
+    per_page = current_app.config['ALBUMY_COMMENT_PER_PAGE']
+    pagination = Comment.query.with_parent(photo).order_by(
+        Comment.timestamp.desc()).paginate(page=page, per_page=per_page)
+    comments = pagination.items
+
     description_form.description.data = photo.description
-    return render_template('users/photo.html', photo=photo, description_form=description_form, tag_form=tag_form)
+    return render_template('users/photo.html', photo=photo, description_form=description_form, tag_form=tag_form, comment_form=comment_form, comments=comments)
 
 
 @bp.route('/photo/n/<int:photo_id>')

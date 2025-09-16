@@ -1,1 +1,80 @@
-我是评论区
+<div class="comments" id="comments">
+    <h4>
+        {{ comments|length }} Comments
+        <small>
+            <form class="inline" method="post" action="#">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-light float-right">
+                    {% if photo.can_comment %} disabled {% else %} enabled {% endif %} Comment </button>
+            </form>
+        </small>
+    </h4>
+    <hr>
+    {% if comments %}
+    {% for comment in comments %}
+    <div class="comment">
+        <div class="comment-thumbnail">
+            <a class="inline" href="{{ url_for('user.index', username=comment.author.username) }}">
+                <img class="rounded img-fluid avatar-s profile-popover"
+                    src="{{ url_for('.get_avatar', filename=comment.author.avatars_s) }}">
+            </a>
+        </div>
+        <div class="comment-body">
+            <h6>
+                <a class="profile-popover text-decoration-none"
+                    href="{{ url_for('user.index', username=comment.author.username) }}">{{ comment.author.name }}</a>
+                {% if comment.author == photo.auth %}
+                <span class="badge text-bg-light rounded-pill">Author</span>
+                {% endif %}
+                <small class="dayjs-tooltip" data-toggle="tooltip" data-placement="top">
+                    <span class="dayjs-from-now">{{ moment(comment.timestamp).fromNow(refresh=True) }}</span>
+                </small>
+                <span class="float-end">
+                    <button class="btn btn-sm btn-light" type="button" data-toggle="dropdown" id="dropdownMenuButton">
+                        <span class="iconfont icon-sangedian"></span>
+                    </button>
+                    <span class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        {% if current_user != comment.author %}
+                        <a class="dropdown-item btn" href="#"><span class="iconfont icon-B-liuyan"></span>Reply</a>
+                        <form class="inline" action="#" method="post">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="dropdown-item iconfont icon-icon-life-flag">Report</button>
+                        </form>
+                        {% else %}
+                        <form class="inline" action="#" method="post">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="dropdown-item iconfont icon-icon">Delete</button>
+                        </form>
+                        {% endif %}
+
+                    </span>
+                </span>
+            </h6>
+            {% if comment.reply_id %}
+            <p>Reply to<a href="{{ url_for('user.index', username=comment.replied.author.username) }}">
+                    {{comment.replied.author.username }}: {{ comment.body }}</a></p>
+            {% else%}
+            <p>{{ comment.body }}</p>
+            {% endif %}
+        </div>
+    </div>
+    <hr>
+    {% endfor %}
+    {% else %}
+    <p class="tip"> No Comments </p>
+    {% endif %}
+    <div class="comment-form-area">
+        <div class="comment-form-thumbnail">
+            <img class="rounded img-fluid avatar-s" src="{{ url_for('.get_avatar', filename=current_user.avatars_s) }}">
+        </div>
+        <div class="comment-form" id="comment-form">
+            {% if photo.can_comment %}
+            <form action="#" method="post">
+                {{render_form(comment_form)}}
+            </form>
+            {% else %}
+            <p class="tip"> Comment disabled </p>
+            {% endif %}
+        </div>
+    </div>
+</div>

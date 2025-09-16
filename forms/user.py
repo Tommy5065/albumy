@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import TextAreaField,  SubmitField, StringField
-from wtforms.validators import Optional, Length
+from wtforms.validators import Optional, Length, DataRequired
 
 
 class DescriptionForm(FlaskForm):
@@ -12,4 +12,9 @@ class DescriptionForm(FlaskForm):
 class TagForm(FlaskForm):
     tag = StringField('Add Tag (use space sperate)',
                       validators=[Optional(), Length(0, 56)])
+    submit = SubmitField()
+
+
+class CommentForm(FlaskForm):
+    body = TextAreaField(' ', validators=[DataRequired(), Length(1, 255)])
     submit = SubmitField()

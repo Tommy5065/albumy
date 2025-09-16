@@ -1,6 +1,8 @@
 import os
 
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+
+
 class BaseConfig:
     SECRET_KEY = os.getenv('SECRET_KEY', 'secret string')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -25,28 +27,35 @@ class BaseConfig:
     }
 
     AVATARS_SAVE_PATH = os.path.join(ALBUMY_UPLOAD_PATH, 'avatars')
-    AVATARS_SIZE_TUPLE= (30, 100, 200)  # 三种尺寸的图像大小
+    AVATARS_SIZE_TUPLE = (30, 100, 200)  # 三种尺寸的图像大小
 
     ALBUMY_IMAGE_PER_PAGE = 12
+    ALBUMY_COMMENT_PER_PAGE = 3
+
 
 class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URI')
+
 
 class TestingConfig(BaseConfig):
     TestingConfig = True
     WTF_CSRF_ENABLE = False
     SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
 
+
 class ProductionConfig(BaseConfig):
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite' + os.path.join(basedir,'data.db'))
+    SQLALCHEMY_DATABASE_URI = os.getenv(
+        'DATABASE_URI', 'sqlite' + os.path.join(basedir, 'data.db'))
+
 
 class Operations:
     CONFIRM = 'confirm'
     RESET_PASSWORD = 'reset_password'
     CHANGE_EMAIL = 'change_email'
 
+
 Config = {
-    "development" : DevelopmentConfig,
+    "development": DevelopmentConfig,
     "testing": TestingConfig,
     "production": ProductionConfig
 }

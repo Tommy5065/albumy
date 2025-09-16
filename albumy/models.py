@@ -26,8 +26,10 @@ class User(db.Model, UserMixin):
     avatars_m = db.Column(db.String(64))
     avatars_l = db.Column(db.String(64))
     roles_id = db.Column(db.Integer, db.ForeignKey('role.id'))
+
     roles = db.relationship('Role', back_populates='users')
     photos = db.relationship('Photo', back_populates='auth', cascade='all')
+    comments = db.relationship('Comment', back_populates='author')
 
     def set_hash(self, password):
         self.password_hash = generate_password_hash(password)
@@ -164,6 +166,8 @@ class Photo(db.Model):
     flag = db.Column(db.Integer, default=0)
     tags = db.relationship('Tag', secondary='Photo_Tag',
                            back_populates='photos')
+    can_comment = db.Column(db.Boolean, default=True)
+    comments = db.relationship('Comment', back_populates='photo')
 
 
 @db.event.listens_for(Photo, 'after_delete', named=True)
@@ -184,3 +188,24 @@ Photo_Tag = db.Table('Photo_Tag',
                      db.Column('photo_id', db.Integer,
                                db.ForeignKey('photo.id'))
                      )
+
+# 评论类
+
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50))
+    body = db.Column(db.String(255))
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    flag = db.Column(db.Integer, default=0)
+
+    auth_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    photo_id = db.Column(db.Integer, db.ForeignKey('photo.id'))
+    reply_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
+
+    author = db.relationship('User', back_populates='comments')
+    photo = db.relationship('Photo', back_populates='comments')
+    replied = db.relationship(
+        'Comment', back_populates='replies', remote_side=[id])
+    replies = db.relationship(
+        'Comment', back_populates='replied', cascade='all')
