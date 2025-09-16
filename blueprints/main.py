@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 
 from albumy.utils import random_filename, resize_image
 from albumy.decorators import confirm_required, permission_required
-from albumy.models import Photo, Tag, Comment
+from albumy.models import Photo, Tag, Comment, User
 from albumy.extensions import db
 
 from forms.user import DescriptionForm, TagForm, CommentForm
@@ -145,7 +145,7 @@ def report_photo(photo_id):
     photo = Photo.query.get_or_404(photo_id)
     photo.flag = (photo.flag or 0)+1
     db.session.commit()
-    flash("report photo success", 'successful')
+    flash("report photo success", 'success')
     return redirect(url_for('.show_photo', photo_id=photo.id))
 
 
@@ -224,3 +224,30 @@ def show_tag(tag_id, order):
         photos.sort(key=lambda x: x.flag, reverse=True)
         order_rule = 'by_collects'
     return render_template('main/tag.html', pagination=pagination, photos=photos, order_rule=order_rule, tag=tag)
+
+
+@bp.route('/comment/new_comment/<int:photo_id>', methods=['POST'])
+def new_comment(photo_id):
+    photo = Photo.query.get_or_404(photo_id)
+    user = User.query.get_or_404(current_user.id)
+
+    form = CommentForm()
+    if form.validate_on_submit:
+        body = form.body.data
+        comment = Comment(name=current_user.username, body=body)
+        photo.comments.append(comment)
+        user.comments.append(comment)
+        db.session.add(comment)
+        db.session.commit()
+    flash('Thanks for your comments!', 'info')
+    return redirect(url_for('.show_photo', photo_id=photo.id))
+
+
+@bp.route('/comment/delete_comment/<int:photo_id>/<int:comment_id>', methods=['POST'])
+def delete_comment(comment_id, photo_id):
+    photo = Photo.query.get_or_404(photo_id)
+    comment = Comment.query.get_or_404(comment_id)
+    db.session.delete(comment)
+    db.session.commit()
+    flash('Delete comment successful!', 'info')
+    return redirect(url_for('.show_photo', photo_id=photo.id))
