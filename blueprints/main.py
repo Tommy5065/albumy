@@ -199,19 +199,20 @@ def delete_tag(tag_id, photo_id):
     return redirect(url_for('.show_photo', photo_id=photo.id))
 
 
-@bp.route('/tag/<int:tag_id>', defaults={'order_rule': 'by_time'})
-@bp.route('/tag/<int:tag_id>/<order_rule>')
-def show_tag(tag_id, order_rule):
+@bp.route('/tag/<int:tag_id>', defaults={'order': 'time'})
+@bp.route('/tag/<int:tag_id>/<order>')
+def show_tag(tag_id, order):
     tag = Tag.query.get_or_404(tag_id)
     page = request.args.get("page", 1, type=int)
     per_page = current_app.config['ALBUMY_IMAGE_PER_PAGE']
     pagination = Photo.query.with_parent(tag).order_by(
-        Photo.timestamp.desc()).paginate(page=page, per_page=per_page)
+        Photo.timestamp.asc()).paginate(page=page, per_page=per_page)
     photos = pagination.items
     order_rule = 'by_time'
 
-    if order_rule == 'by_collects':
-        # 本来是以收藏者数量为排序，但是没有做collects这个字段，所以暂时用flag字段来代替
-        photos.sort(lambda x: len(x.flag), reversed=True)
+    if order == 'by_collects':
+        # 本来是以收藏者数量为排序，但是没有做collects这个字段，所以暂时用flag数字字段来代替
+        # .sort()是图片的排序方式
+        photos.sort(key=lambda x: x.flag, reverse=True)
         order_rule = 'by_collects'
     return render_template('main/tag.html', pagination=pagination, photos=photos, order_rule=order_rule, tag=tag)
