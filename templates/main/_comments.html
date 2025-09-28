@@ -35,8 +35,12 @@
                     </button>
                     <span class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         {% if current_user != comment.author %}
-                        <a class="dropdown-item btn" href="#"><span class="iconfont icon-B-liuyan"></span>Reply</a>
-                        <form class="inline" action="#" method="post">
+                        <a class="dropdown-item btn"
+                            href="{{ url_for('.reply_comment', comment_id=comment.id, reply=comment.id, auth=comment.auth_id ) }}"><span
+                                class="iconfont icon-B-liuyan"></span>Reply</a>
+                        <form class="inline"
+                            action="{{ url_for('.report_comment', photo_id=photo.id, comment_id=comment.id) }}"
+                            method="post">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <button type="submit" class="dropdown-item iconfont icon-icon-life-flag">Report</button>
                         </form>
@@ -65,12 +69,19 @@
     {% else %}
     <p class="tip"> No Comments </p>
     {% endif %}
+
     <div class="comment-form-area">
         <div class="comment-form-thumbnail">
             <img class="rounded img-fluid avatar-s" src="{{ url_for('.get_avatar', filename=current_user.avatars_s) }}">
         </div>
         <div class="comment-form" id="comment-form">
             {% if photo.can_comment %}
+            {%if request.args.get("reply")%}
+            <p>
+                Reply to <strong>{{ request.args.get("auth") }}</strong>:
+                <a class="float-right" href="{{ url_for('.show_photo', photo_id=photo.id) }}">Cancel</a>
+            </p>
+            {% endif %}
             <form action="{{ url_for('.new_comment', photo_id=photo.id) }}" method="post">
                 {{render_form(comment_form)}}
             </form>

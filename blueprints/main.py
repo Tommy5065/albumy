@@ -251,3 +251,21 @@ def delete_comment(comment_id, photo_id):
     db.session.commit()
     flash('Delete comment successful!', 'info')
     return redirect(url_for('.show_photo', photo_id=photo.id))
+
+
+@bp.route('/comment/report_comment/<int:photo_id>/<int:comment_id>', methods=['POST'])
+@confirm_required
+def report_comment(photo_id, comment_id):
+    photo = Photo.query.get_or_404(photo_id)
+    comment = Comment.query.get_or_404(comment_id)
+    comment.flag += 1
+    db.session.commit()
+    flash('report comment successful', 'info')
+    return redirect(url_for('.show_photo', photo_id=photo.id))
+
+
+@bp.route('/comment/reply_comment/<int:comment_id>')
+@confirm_required
+def reply_comment(comment_id):
+    comment = Comment.query.get_or_404(comment_id)
+    return redirect(url_for('.show_photo', photo_id=comment.photo.id, reply=comment.photo.id, auth=comment.author.name)+"#comment-form")
