@@ -2,7 +2,7 @@
     <h4>
         {{ comments|length }} Comments
         <small>
-            <form class="inline" method="post" action="#">
+            <form class="inline" method="post" action="{{ url_for('.comment_button', photo_id=photo.id) }}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <button type="submit" class="btn btn-light float-right">
                     {% if photo.can_comment %} disabled {% else %} enabled {% endif %} Comment </button>
@@ -66,6 +66,9 @@
     </div>
     <hr>
     {% endfor %}
+    <div>
+        {{ render_pagination(pagination, align='center') }}
+    </div>
     {% else %}
     <p class="tip"> No Comments </p>
     {% endif %}

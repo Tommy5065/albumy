@@ -83,7 +83,7 @@ def show_photo(photo_id):
     comments = pagination.items
 
     description_form.description.data = photo.description
-    return render_template('users/photo.html', photo=photo, description_form=description_form, tag_form=tag_form, comment_form=comment_form, comments=comments)
+    return render_template('users/photo.html', photo=photo, description_form=description_form, tag_form=tag_form, comment_form=comment_form, comments=comments, pagination=pagination)
 
 
 @bp.route('/photo/n/<int:photo_id>')
@@ -269,3 +269,19 @@ def report_comment(photo_id, comment_id):
 def reply_comment(comment_id):
     comment = Comment.query.get_or_404(comment_id)
     return redirect(url_for('.show_photo', photo_id=comment.photo.id, reply=comment.id, auth=comment.author.name)+"#comment-form")
+
+
+@bp.route('/comment/comment_button/<int:photo_id>', methods=['POST'])
+@confirm_required
+def comment_button(photo_id):
+    photo = Photo.query.get_or_404(photo_id)
+    if photo.can_comment:
+        photo.can_comment = False
+        db.session.commit()
+        flash('Close comment form', 'info')
+        return redirect(url_for('.show_photo', photo_id=photo.id))
+    else:
+        photo.can_comment = True
+        db.session.commit()
+        flash('Open comment form', 'info')
+        return redirect(url_for('.show_photo', photo_id=photo.id))
