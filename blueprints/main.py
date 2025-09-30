@@ -83,7 +83,8 @@ def show_photo(photo_id):
     comments = pagination.items
 
     description_form.description.data = photo.description
-    return render_template('users/photo.html', photo=photo, description_form=description_form, tag_form=tag_form, comment_form=comment_form, comments=comments, pagination=pagination)
+    reply_to = request.args.get('reply_to')
+    return render_template('users/photo.html', photo=photo, description_form=description_form, tag_form=tag_form, comment_form=comment_form, comments=comments, pagination=pagination, reply_to=reply_to)
 
 
 @bp.route('/photo/n/<int:photo_id>')
@@ -230,11 +231,13 @@ def show_tag(tag_id, order):
 def new_comment(photo_id):
     photo = Photo.query.get_or_404(photo_id)
     user = User.query.get_or_404(current_user.id)
+    reply_to = request.args.get('reply_to')
 
     form = CommentForm()
     if form.validate_on_submit:
         body = form.body.data
-        comment = Comment(name=current_user.username, body=body)
+        comment = Comment(name=current_user.username,
+                          body=body, reply_id=reply_to)
         photo.comments.append(comment)
         user.comments.append(comment)
         db.session.add(comment)
@@ -268,7 +271,7 @@ def report_comment(photo_id, comment_id):
 @confirm_required
 def reply_comment(comment_id):
     comment = Comment.query.get_or_404(comment_id)
-    return redirect(url_for('.show_photo', photo_id=comment.photo.id, reply=comment.id, auth=comment.author.name)+"#comment-form")
+    return redirect(url_for('.show_photo', photo_id=comment.photo.id, reply_to=comment.id, auth=comment.author.name)+"#comment-form")
 
 
 @bp.route('/comment/comment_button/<int:photo_id>', methods=['POST'])
