@@ -80,10 +80,10 @@
         <div class="comment-form" id="comment-form">
             {% if photo.can_comment %}
             {%if request.args.get("reply")%}
-            <p>
+            <div class="alert alert-dark">
                 Reply to <strong>{{ request.args.get("auth") }}</strong>:
                 <a class="float-right" href="{{ url_for('.show_photo', photo_id=photo.id) }}">Cancel</a>
-            </p>
+            </div>
             {% endif %}
             <form action="{{ url_for('.new_comment', photo_id=photo.id) }}" method="post">
                 {{render_form(comment_form)}}
