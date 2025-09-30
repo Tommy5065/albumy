@@ -268,4 +268,4 @@ def report_comment(photo_id, comment_id):
 @confirm_required
 def reply_comment(comment_id):
     comment = Comment.query.get_or_404(comment_id)
-    return redirect(url_for('.show_photo', photo_id=comment.photo.id, reply=comment.photo.id, auth=comment.author.name)+"#comment-form")
+    return redirect(url_for('.show_photo', photo_id=comment.photo.id, reply=comment.id, auth=comment.author.name)+"#comment-form")
