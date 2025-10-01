@@ -12,7 +12,7 @@
                 <img src="{{ url_for('.get_image', filename=photo.filename_m) }}">
             </a>
         </div>
-        <a class="btn btn-light btn-sm" data-bs-target="#share-Modal" data-bs-toggle="modal">Share</a>
+        <a class="btn btn-light btn-sm" data-target="#share-Modal" data-toggle="modal">Share</a>
         {% if current_user == photo.auth %}
         <a class="btn btn-danger btn-sm text-white" data-target="#confirm-delete" data-toggle="modal"
             data-href="{{ url_for('main.photo_delete', photo_id=photo.id) }}">Delete</a>
@@ -32,7 +32,25 @@
     </div>
 </div>
 {# share modal #}
-
+<div id="share-Modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"
+    aria-labelledby="confirmModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Permalink</h5>
+                <button type="button" class="close" aria-label="Close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-body w-100">
+                    <input type="text" class="form-control" readonly
+                        value="{{ url_for('.show_photo', photo_id=photo.id, _external=True) }}">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {# confirm-delete #}
 <div id="confirm-delete" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"
     aria-labelledby="confirmModalLabel">
@@ -40,7 +58,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="confirmModalLabel">Delete Confirm</h5>
-                <button type="button" class="close" aria-label="Close" data-bs-dismiss="modal">
+                <button type="button" class="close" aria-label="Close" data-dismiss="modal">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -50,7 +68,6 @@
             <div class="modal-footer">
                 <form class="delete-form" action="" method="post">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <button class="btn-default btn" type="button" data-bs-dismiss="Modal">Cansel</button>
                     <button class="btn btn-danger btn-confirm" type="submit">Delete</button>
                 </form>
             </div>
