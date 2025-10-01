@@ -1,0 +1,18 @@
+<div class="popup-card">
+    <img class="rounded img-fluid avatar-s popup-avatar"
+        src="{{ url_for('main.get_avatar', filename=user.avatars_m) }}">
+    <div class="popup-profile">
+        <h6>{{ user.name }}</h6>
+        <p class="text-muted">{{ user.username }}</p>
+    </div>
+    <div class="card-text">
+        <a href="{{ url_for('user.index', username=user.username) }}"><strong>{{ user.photos|length }}</strong> Photos
+        </a>
+        <a href="#"><strong>0</strong>Followers</a>
+    </div>
+    <a href="{{ url_for('user.index', username=user.username) }}" class="btn btn-light btn-sm">Homepage</a>
+    {%if user.comments%}
+    <!-- 这应该是根据粉丝数显示粉丝按钮但是模型类里还没有粉丝数，暂时用评论数代替,也还没做粉丝板块跳转#代替 -->
+    <a href="#" class="btn btn-sm"><strong>{{ user.comments|length }}</strong>Followe</a>
+    {% endif %}
+</div>

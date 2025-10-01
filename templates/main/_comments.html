@@ -16,13 +16,16 @@
         <div class="comment-thumbnail">
             <a class="inline" href="{{ url_for('user.index', username=comment.author.username) }}">
                 <img class="rounded img-fluid avatar-s profile-popover"
-                    src="{{ url_for('.get_avatar', filename=comment.author.avatars_s) }}">
+                    src="{{ url_for('.get_avatar', filename=comment.author.avatars_s) }}"
+                    data-href="{{ url_for('ajax.get_profile', user_id=comment.author.id) }}">
             </a>
         </div>
         <div class="comment-body">
             <h6>
                 <a class="profile-popover text-decoration-none"
-                    href="{{ url_for('user.index', username=comment.author.username) }}">{{ comment.author.name }}</a>
+                    href="{{ url_for('user.index', username=comment.author.username) }}"
+                    data-href="{{ url_for('ajax.get_profile', user_id=comment.author.id) }}">{{ comment.author.name
+                    }}</a>
                 {% if comment.author == photo.auth %}
                 <span class="badge text-bg-light rounded-pill">Author</span>
                 {% endif %}

@@ -11,6 +11,8 @@ from albumy.models import Role, Guest
 from blueprints.main import bp as main_bp
 from blueprints.auth import bp as auth_bp
 from blueprints.user import bp as user_bp
+from blueprints.ajax import bp as ajax_bp
+
 
 def create_app(Config_name=None):
 
@@ -64,9 +66,10 @@ def create_app(Config_name=None):
             click.echo('Initialize Done!')
 
     def register_blueprint(app):
-       app.register_blueprint(main_bp)
-       app.register_blueprint(auth_bp, url_prefix='/auth')
-       app.register_blueprint(user_bp, url_prefix='/user')
+        app.register_blueprint(main_bp)
+        app.register_blueprint(auth_bp, url_prefix='/auth')
+        app.register_blueprint(user_bp, url_prefix='/user')
+        app.register_blueprint(ajax_bp, url_prefix='/ajax')
 
     register_extensions(app)
     register_errors(app)
