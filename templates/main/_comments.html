@@ -57,8 +57,12 @@
                 </span>
             </h6>
             {% if comment.reply_id %}
-            <p>Reply to<a href="{{ url_for('user.index', username=comment.replied.author.username) }}">
-                    {{comment.replied.author.username }}: {{ comment.body }}</a></p>
+            <p>Reply to
+                <a href="{{ url_for('user.index', username=comment.replied.author.username) }}">
+                    {{comment.replied.author.username }}
+                </a>
+                : {{ comment.body }}
+            </p>
             {% else%}
             <p>{{ comment.body }}</p>
             {% endif %}
